@@ -13,7 +13,7 @@ pre: " <b> 5. </b> "
 <a href="https://console.aws.amazon.com/cloudformation/home#/stacks/quickcreate?templateURL=https%3A%2F%2Fpomatas-public-blogs.s3.us-east-1.amazonaws.com%2Fdynatrace-api-gateway%2Fbedrock-llm-gateway.yaml&stackName=bedrock-llm-gateway&param_EnableAuthorizer=false&param_EndpointType=PRIVATE"
    target="_blank"
    rel="noopener noreferrer">
-  <img src="/images/launch-stack-button.png"
+  <img src="images/launch-stack-button.png"
        alt="Launch Stack"
        style="margin:0; display:inline-block; float:left;">
 </a>
@@ -39,20 +39,20 @@ pre: " <b> 5. </b> "
     - Select **I acknowledge that AWS CloudFormation might create IAM resources.**
     - Click **Create Stack**
 
-![Launch Stack](/images/5-Launchstack/0001.png)
+![Launch Stack](images/5-Launchstack/0001.png)
 
-![Launch Stack](/images/5-Launchstack/0002.png)
+![Launch Stack](images/5-Launchstack/0002.png)
 
-![Launch Stack](/images/5-Launchstack/0003.png)
+![Launch Stack](images/5-Launchstack/0003.png)
 
 4. Review **CREATE_IN_PROGRESS** and click refresh icon to check **CREATE_COMPLETE**
 
-![Launch Stack](/images/5-Launchstack/0004.png)
+![Launch Stack](images/5-Launchstack/0004.png)
 
 5. Review **CREATE_COMPLETE** and select **Outputs**.
 
-![Launch Stack](/images/5-Launchstack/0005.png)
+![Launch Stack](images/5-Launchstack/0005.png)
 
 6. Review **Outputs**.
 
-![Launch Stack](/images/5-Launchstack/0006.png)
+![Launch Stack](images/5-Launchstack/0006.png)

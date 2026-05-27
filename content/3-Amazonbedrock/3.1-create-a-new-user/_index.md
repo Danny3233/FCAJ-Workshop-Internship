@@ -13,11 +13,11 @@ pre: " <b> 3.1 </b> "
     - In the search bar, find **IAM**
     - Select **IAM**
 
-![IAM user](/static/images/3-Amazonbedrock/3.1-create-a-new-user/0001.png)
+![IAM user](images/3-Amazonbedrock/3.1-create-a-new-user/0001.png)
 
 2. Select **IAM user** and click **Create user**
 
-![IAM user](/static/images/3-Amazonbedrock/3.1-create-a-new-user/0002.png)
+![IAM user](images/3-Amazonbedrock/3.1-create-a-new-user/0002.png)
 
 3. In the ***User details** interface.
 
@@ -26,11 +26,11 @@ pre: " <b> 3.1 </b> "
     - Select **Custom password**, enter: ``Password123``
     - Select **Show password**
 
-![IAM user](/static/images/3-Amazonbedrock/3.1-create-a-new-user/0003.png)
+![IAM user](images/3-Amazonbedrock/3.1-create-a-new-user/0003.png)
 
 4. Unselect **Users must create a new password at next sign in - Recommended** and click **Next**.
 
-![IAM user](/static/images/3-Amazonbedrock/3.1-create-a-new-user/0004.png)
+![IAM user](images/3-Amazonbedrock/3.1-create-a-new-user/0004.png)
 
 5. In the **Set permissions** interface.
 
@@ -38,16 +38,16 @@ pre: " <b> 3.1 </b> "
     - Find ``AmazonBedrockFullAccess``
     - Select **AmazonBedrockFullAccess** and click **Next**
 
-![IAM user](/static/images/3-Amazonbedrock/3.1-create-a-new-user/0005.png)
+![IAM user](images/3-Amazonbedrock/3.1-create-a-new-user/0005.png)
 
-![IAM user](/static/images/3-Amazonbedrock/3.1-create-a-new-user/0006.png)
+![IAM user](images/3-Amazonbedrock/3.1-create-a-new-user/0006.png)
 
 6. Click **Create user**.
 
-![IAM user](/static/images/3-Amazonbedrock/3.1-create-a-new-user/0007.png)
+![IAM user](images/3-Amazonbedrock/3.1-create-a-new-user/0007.png)
 
 7. Click **Return to user list** and review **bedrock-ai-chatbot-user**
 
-![IAM user](/static/images/3-Amazonbedrock/3.1-create-a-new-user/0008.png)
+![IAM user](images/3-Amazonbedrock/3.1-create-a-new-user/0008.png)
 
-![IAM user](/static/images/3-Amazonbedrock/3.1-create-a-new-user/0009.png)
+![IAM user](images/3-Amazonbedrock/3.1-create-a-new-user/0009.png)
