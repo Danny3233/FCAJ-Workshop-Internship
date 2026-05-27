@@ -7,7 +7,7 @@ pre: " <b> 7. </b> "
 ---
 ### Architecture Flow
 
-![Testing deployment](/images/6-Testdeployment/AI-Chatbot.png)
+![Testing deployment](/images/7-Testdeployment/AI-Chatbot.png)
 
 #### Main Topics in This Section:
 
