@@ -13,7 +13,7 @@ pre: " <b> 3.2 </b> "
     - Select **IAM users**
     - Click **bedrock-ai-chatbot-user**
 
-![Attach permissions](/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/0001.png)
+![Attach permissions](/static/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/0001.png)
 
 2. Select **Add permission** in the dropdown.
 
@@ -25,17 +25,17 @@ pre: " <b> 3.2 </b> "
     - Review **Policy name**
 
 
-![Attach permissions](/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/0002.png)
+![Attach permissions](/static/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/0002.png)
 
-![Attach permissions](/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/0003.png)
+![Attach permissions](/static/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/0003.png)
 
-![Attach permissions](/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/0004.png)
+![Attach permissions](/static/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/0004.png)
 
-![Attach permissions](/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/0005.png)
+![Attach permissions](/static/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/0005.png)
 
-![Attach permissions](/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/0006.png)
+![Attach permissions](/static/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/0006.png)
 
-![Attach permissions](/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/0007.png)
+![Attach permissions](/static/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/0007.png)
 
 3. After adding permissions.
 
@@ -48,7 +48,7 @@ pre: " <b> 3.2 </b> "
     - Click **Next** and **Add permissions**
     - Review **Policy name**
 
-![Attach permissions](/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/0008.png)
+![Attach permissions](/static/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/0008.png)
 
 4. Select **Create inline policy** in the dropdown.
 
@@ -74,10 +74,10 @@ pre: " <b> 3.2 </b> "
     - Click **Create policy**
     - Review **Policy name**
 
-![Attach permissions](/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/0009.png)
+![Attach permissions](/static/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/0009.png)
 
-![Attach permissions](/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/00010.png)
+![Attach permissions](/static/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/00010.png)
 
-![Attach permissions](/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/00011.png)
+![Attach permissions](/static/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/00011.png)
 
-![Attach permissions](/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/00012.png)
+![Attach permissions](/static/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/00012.png)

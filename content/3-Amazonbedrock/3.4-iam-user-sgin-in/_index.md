@@ -12,7 +12,7 @@ pre: " <b> 3.4 </b> "
 
     - Select **Sign in to an existing AWS account**
 
-![IAM User Sign in](/images/3-Amazonbedrock/3.4-iam-user-sign-in/0001.png)
+![IAM User Sign in](/static/images/3-Amazonbedrock/3.4-iam-user-sign-in/0001.png)
 
 2. In the **IAM user sign in**
 
@@ -20,8 +20,8 @@ pre: " <b> 3.4 </b> "
     - **IAM username**: enter ``bedrock-ai-chatbot-user``
     - **Password**: enter ``Password123``
 
-![IAM User Sign in](/images/3-Amazonbedrock/3.4-iam-user-sign-in/0002.png)
+![IAM User Sign in](/static/images/3-Amazonbedrock/3.4-iam-user-sign-in/0002.png)
 
 3. After signing in to the AWS Management Console.
 
-![IAM User Sign in](/images/3-Amazonbedrock/3.4-iam-user-sign-in/0003.png)
+![IAM User Sign in](/static/images/3-Amazonbedrock/3.4-iam-user-sign-in/0003.png)

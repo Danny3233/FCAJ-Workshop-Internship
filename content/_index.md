@@ -14,7 +14,7 @@ This architecture creates an AI Gateway in front of Amazon Bedrock using Amazon 
 The architecture allows client applications to interact with Amazon Bedrock APIs transparently while the gateway handles authentication, quota management, logging, and other enterprise requirements behind the scenes.
 ### Architecture Flow
 
-![AI Gateway](/images/aigateway.png)
+![AI Gateway](/static/images/aigateway.png)
 
 ### Content
 

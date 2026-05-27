@@ -7,7 +7,7 @@ chapter: false
 
 # Xây dựng một AI Gateway với Amazon Bedrock bằng Amazon API Gateway
 
-![AI Gateway](/images/aigateway.png)
+![AI Gateway](/static/images/aigateway.png)
 
 
 ### Nội dung báo cáo
