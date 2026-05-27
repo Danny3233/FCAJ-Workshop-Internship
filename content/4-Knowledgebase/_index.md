@@ -13,15 +13,15 @@ pre: " <b> 4. </b> "
     - Select **Singapore**
     - Review **Region: Singapore**
 
-![Knowledgebase](/static/images/4-Knowledgebase/0001.png)
+![Knowledgebase](images/4-Knowledgebase/0001.png)
 
-![Knowledgebase](/static/images/4-Knowledgebase/0002.png)
+![Knowledgebase](images/4-Knowledgebase/0002.png)
 
-![Knowledgebase](/static/images/4-Knowledgebase/0003.png)
+![Knowledgebase](images/4-Knowledgebase/0003.png)
 
 2. In the search bar, find ``Amazon Bedrock`` and click **Amazon Bedrock**.
 
-![Knowledgebase](/static/images/4-Knowledgebase/0004.png)
+![Knowledgebase](images/4-Knowledgebase/0004.png)
 
 3. In the **Knowledge Bases** interface.
 
@@ -29,7 +29,7 @@ pre: " <b> 4. </b> "
     - Select **Create** in the dropdown 
     - Click **Knowlege Base with vector store**
 
-![Knowledgebase](/static/images/4-Knowledgebase/0005.png)
+![Knowledgebase](images/4-Knowledgebase/0005.png)
 
 4. In the **Provide Knowledge Base details**.
 
@@ -37,13 +37,13 @@ pre: " <b> 4. </b> "
     - **Knowledge Base description - optional**: enter ``Test knowledge base for ai chatbot``
     - Select **Create and use a new service role**
 
-![Knowledgebase](/static/images/4-Knowledgebase/0006.png)
+![Knowledgebase](images/4-Knowledgebase/0006.png)
 
 5. Select **Amazon S3** and click **Next**
 
-![Knowledgebase](/static/images/4-Knowledgebase/0007.png)
+![Knowledgebase](images/4-Knowledgebase/0007.png)
 
-![Knowledgebase](/static/images/4-Knowledgebase/0008.png)
+![Knowledgebase](images/4-Knowledgebase/0008.png)
 
 
 6. In the **Configure data source** interface.
@@ -52,57 +52,57 @@ pre: " <b> 4. </b> "
     - Select **This AWS account**
     - Click **Browse S3**
 
-![Knowledgebase](/static/images/4-Knowledgebase/0009.png)
+![Knowledgebase](images/4-Knowledgebase/0009.png)
 
 7. Select **bedrock-aichatbot-bucket** and click **Choose**.
 
-![Knowledgebase](/static/images/4-Knowledgebase/00010.png)
+![Knowledgebase](images/4-Knowledgebase/00010.png)
 
 8. **S3 URL**: enter ``s3://bedrock-aichatbot-bucket/docs/`` and click **View** to check S3 URL.
 
-![Knowledgebase](/static/images/4-Knowledgebase/00011.png)
+![Knowledgebase](images/4-Knowledgebase/00011.png)
 
 9. View **S3**.
 
-![Knowledgebase](/static/images/4-Knowledgebase/00012.png)
+![Knowledgebase](images/4-Knowledgebase/00012.png)
 
 10. Select **Amazon Bedrock default parset** and click **Next**.
 
-![Knowledgebase](/static/images/4-Knowledgebase/00013.png)
+![Knowledgebase](images/4-Knowledgebase/00013.png)
 
 
 11. Select **Select model**.
 
-![Knowledgebase](/static/images/4-Knowledgebase/00014.png)
+![Knowledgebase](images/4-Knowledgebase/00014.png)
 
 - Select **Cohere**
 - Select **Embed Multilingual**
 - Click **Apply**
 
-![Knowledgebase](/static/images/4-Knowledgebase/00015.png)
+![Knowledgebase](images/4-Knowledgebase/00015.png)
 
 12. Select **Quick create a new vector store - Recommended** and **Select a vector store**.
 
-![Knowledgebase](/static/images/4-Knowledgebase/00016.png)
+![Knowledgebase](images/4-Knowledgebase/00016.png)
 
 - Select **Amazon OpenSearch Serverless**
 
-![Knowledgebase](/static/images/4-Knowledgebase/00017.png)
+![Knowledgebase](images/4-Knowledgebase/00017.png)
 
 13. Click **Next**.
 
-![Knowledgebase](/static/images/4-Knowledgebase/00018.png)
+![Knowledgebase](images/4-Knowledgebase/00018.png)
 
 14. Click **Create Knowledge Base**.
 
-![Knowledgebase](/static/images/4-Knowledgebase/00019.png)
+![Knowledgebase](images/4-Knowledgebase/00019.png)
 
 15. Preparting to create the **Amazon OpenSearch Serverless**, then wait 3-5 minutes for the setup process to complete.
 
-![Knowledgebase](/static/images/4-Knowledgebase/00020.png)
+![Knowledgebase](images/4-Knowledgebase/00020.png)
 
 16. Review **Knowledge Base overview** and **Data source**.
 
-![Knowledgebase](/static/images/4-Knowledgebase/00021.png)
+![Knowledgebase](images/4-Knowledgebase/00021.png)
 
-![Knowledgebase](/static/images/4-Knowledgebase/00022.png)
+![Knowledgebase](images/4-Knowledgebase/00022.png)
