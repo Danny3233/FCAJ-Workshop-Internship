@@ -13,34 +13,34 @@ pre: " <b> 2.2 </b> "
     - In the search bar, find ``Amazon Cognito``
     - Select **Cognito**
 
-![AmazonCoginto](images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/0001.png)
+![AmazonCoginto](/images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/0001.png)
 
 2. Select **User pools** and click **Create user pool**
 
-![AmazonCoginto](images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/0002.png)
+![AmazonCoginto](/images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/0002.png)
 
 3. In the **Define your application** interface.
 
     - Select **Traditional web application** on the Appplication type
     - **Name your application**: Enter ``client-aichatbot-cognito``
 
-![AmazonCoginto](images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/0003.png)
+![AmazonCoginto](/images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/0003.png)
 
 4. In the **Configure options** interface, select **Email** and **Select attributes**
 
-![AmazonCoginto](images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/0004.png)
+![AmazonCoginto](/images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/0004.png)
 
 - Select **name**
 
-![AmazonCoginto](images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/0005.png)
+![AmazonCoginto](/images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/0005.png)
 
 5. **Return URL**: enter ``https://localhost:5000/`` and click **Create user directory**. 
 
-![AmazonCoginto](images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/0006.png)
+![AmazonCoginto](/images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/0006.png)
 
 6. Select **Go to overview**.
 
-![AmazonCoginto](images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/0007.png)
+![AmazonCoginto](/images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/0007.png)
 
 7. In the **Amazon Ognito** interface.
 
@@ -48,11 +48,11 @@ pre: " <b> 2.2 </b> "
     - Click **App client name**
     - Select **Edit**
 
-![AmazonCoginto](images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/0008.png)
+![AmazonCoginto](/images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/0008.png)
 
-![AmazonCoginto](images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/0009.png)
+![AmazonCoginto](/images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/0009.png)
 
-![AmazonCoginto](images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/00010.png)
+![AmazonCoginto](/images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/00010.png)
 
 8. In the **App client** interface.
 
@@ -60,12 +60,12 @@ pre: " <b> 2.2 </b> "
     - Select **ALLOW_USER_PASSWORD_AUTH** and **ALLOW_REFRESH_TOKEN_AUTH**
     - Click **Save changes**
 
-![AmazonCoginto](images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/00011.png)
+![AmazonCoginto](/images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/00011.png)
 
-![AmazonCoginto](images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/00012.png)
+![AmazonCoginto](/images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/00012.png)
 
-![AmazonCoginto](images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/00013.png)
+![AmazonCoginto](/images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/00013.png)
 
 9. In the app client has been updated successfully after saving change.
 
-![AmazonCoginto](images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/00014.png)
+![AmazonCoginto](/images/2-Preparetion/2.2-create-a-cognito-for-jwt-token/00014.png)

@@ -16,7 +16,7 @@ pre: " <b> 2.1 </b> "
 
 2. In the **Amazon S3** interface and Click **Create Bucket** button.
 
-![Amazon S3](images/2-Preparetion/2.1-create-a-s3-for-bedrock/0002.png)
+![Amazon S3](/images/2-Preparetion/2.1-create-a-s3-for-bedrock/0002.png)
 
 3. In the **Create Bucket** interfece
 
@@ -32,32 +32,32 @@ pre: " <b> 2.1 </b> "
 - Cannot start or end with a hyphen
 - Cannot contain spaces or uppercase letters
 
-![AmazonS3](images/2-Preparetion/2.1-create-a-s3-for-bedrock/0003.png)
+![AmazonS3](/images/2-Preparetion/2.1-create-a-s3-for-bedrock/0003.png)
 
 4. Click **Create Bucket** and select **Upload** after creating the bucket.
 
-![AmazonS3](images/2-Preparetion/2.1-create-a-s3-for-bedrock/0004.png)
+![AmazonS3](/images/2-Preparetion/2.1-create-a-s3-for-bedrock/0004.png)
 
-![AmazonS3](images/2-Preparetion/2.1-create-a-s3-for-bedrock/0005.png)
+![AmazonS3](/images/2-Preparetion/2.1-create-a-s3-for-bedrock/0005.png)
 
 5. In the **Upload** interface.
 
     - Select **Add folder**
     - Select **Docs** and click **Tải lên**
 
-![AmazonS3](images/2-Preparetion/2.1-create-a-s3-for-bedrock/0006.png)
+![AmazonS3](/images/2-Preparetion/2.1-create-a-s3-for-bedrock/0006.png)
 
-![AmazonS3](images/2-Preparetion/2.1-create-a-s3-for-bedrock/0007.png)
+![AmazonS3](/images/2-Preparetion/2.1-create-a-s3-for-bedrock/0007.png)
 
 6. In the **Files and folders** interface.
 
     - Scroll down 
     - Click **Upload**
 
-![AmazonS3](images/2-Preparetion/2.1-create-a-s3-for-bedrock/0008.png)
+![AmazonS3](/images/2-Preparetion/2.1-create-a-s3-for-bedrock/0008.png)
 
-![AmazonS3](images/2-Preparetion/2.1-create-a-s3-for-bedrock/0009.png)
+![AmazonS3](/images/2-Preparetion/2.1-create-a-s3-for-bedrock/0009.png)
 
 7. In the upload succeeded after uploading to S3.
 
-![AmazonS3](images/2-Preparetion/2.1-create-a-s3-for-bedrock/00010.png)
+![AmazonS3](/images/2-Preparetion/2.1-create-a-s3-for-bedrock/00010.png)
