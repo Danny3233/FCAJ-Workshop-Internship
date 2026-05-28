@@ -98,7 +98,7 @@ export KB_ID="your-kb-id"
 
 ![Test Deploymet](/images/7-Testdeployment/7.2-test-deployment/0005.png)
 
-5. Go back to open the <a href="https://ap-southeast-1.console.aws.amazon.com/cloudshell/home?region=ap-southeast-1#" target="_blank">CloudShellk</a> console.
+5. Go back to open the <a href="https://ap-southeast-1.console.aws.amazon.com/cloudshell/home?region=ap-southeast-1#" target="_blank">CloudShell</a> console.
 
 ![Test Deploymet](/images/7-Testdeployment/7.2-test-deployment/0006.png)
 

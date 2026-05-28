@@ -1,5 +1,5 @@
 ---
-title: "Building an AI gateway to Amazon Bedrock with Amazon API Gateway"
+title: "Overview"
 date: 2024-01-01
 weight: 1
 chapter: false
@@ -19,9 +19,9 @@ The architecture allows client applications to interact with Amazon Bedrock APIs
 ### Content
 
 1.  [Introduction](1-Introduction/)
-2.  [Preparetion](2-Preparetion/)
+2.  [Preparation](2-Preparetion/)
 3.  [Create an IAM user for Amazon Bedrock](3-Amazonbedrock/)
-4.  [Create a Knowledge base on Amazon Bedrock](4-Knowledgebase/)
+4.  [Create a Knowledge Base on Amazon Bedrock](4-Knowledgebase/)
 5.  [Deploying with AWS CloudFormation](5-Launchstack/)
 6.  [Run Application on VS Code](6-Runapplication/)
 7.  [Testing the deployment](7-Testdeployment/)

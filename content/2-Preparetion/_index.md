@@ -1,5 +1,5 @@
 ---
-title: "Preparetion"
+title: "Preparation"
 date: 2026-05-14T14:00:35+07:00
 weight: 2
 chapter: false

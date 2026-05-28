@@ -1,5 +1,5 @@
 ---
-title: "Xây dựng một AI Gateway với Amazon Bedrock bằng Amazon API Gateway"
+title: "Tổng quan"
 date: 2024-01-01
 weight: 1
 chapter: false
