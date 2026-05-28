@@ -5,3 +5,12 @@ weight: 7
 chapter: false
 pre: " <b> 7. </b> "
 ---
+
+### Luồng kiến trúc 
+
+![Testing deployment](/images/7-Testdeployment/AI-Chatbot.png)
+
+#### Các nội dung chính trong phần này:
+
+- Tạo môi trường VPC
+- Kiểm thử triển khai

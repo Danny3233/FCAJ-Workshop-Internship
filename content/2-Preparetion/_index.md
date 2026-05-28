@@ -71,3 +71,4 @@ Example Amazon Bedrock permission policy:
   ],
   "Resource": "*"
 }
+```

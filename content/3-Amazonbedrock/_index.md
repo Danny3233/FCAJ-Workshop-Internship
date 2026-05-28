@@ -41,10 +41,9 @@ AmazonS3FullAccess
 IAMReadOnlyAccess
 ```
 
-
 #### Main Topics in This Section:
 
-- Create a new IAM user
-- Attach permissions for Amazon Bedrock
-- Generate Access Key ID and Secret Access Key
-- IAM user Sgin in
+* Create a new IAM user
+* Attach permissions for Amazon Bedrock
+* Generate Access Key ID and Secret Access Key
+* IAM user Sgin in
