@@ -11,7 +11,6 @@ pre: " <b> 3.2 </b> "
 1. Truy cập [Bảng điều khiển IAM](https://us-east-1.console.aws.amazon.com/iam/home?region=ap-southeast-1#/home).
 
     - Chọn **IAM users**
-
     - Nhấp vào **bedrock-ai-chatbot-user**
 
 ![Attach permissions](/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/0001.png)
@@ -19,15 +18,10 @@ pre: " <b> 3.2 </b> "
 2. Chọn **Add permission** trong menu thả xuống.
 
     - Chọn **Add permission**
-
     - Chọn **Attach policies directly**
-
     - **Permissions policies**: nhập ``AmazonDynamoDBFullAccess``
-
     - Nhấp vào **Next**
-
     - Nhấp vào **Add permissions**
-
     - Xem lại **Policy name**
 
 ![Attach permissions](/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/0002.png)
@@ -45,19 +39,12 @@ pre: " <b> 3.2 </b> "
 3. Sau khi thêm permissions.
 
     - **Permissions policies**: nhập ``AmazonAPIGatewayAdministrator``
-
     - **Permissions policies**: nhập ``AmazonOpenSearchServiceFullAccess``
-
     - **Permissions policies**: nhập ``AmazonS3FullAccess``
-
     - **Permissions policies**: nhập ``AWSCloudFormationFullAccess``
-
     - **Permissions policies**: nhập ``AWSLambda_FullAccess``
-
     - **Permissions policies**: nhập ``IAMFullAccess``
-
     - Nhấp vào **Next** và **Add permissions**
-
     - Xem lại **Policy name**
 
 ![Đính kèm quyền](/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/0008.png)
@@ -65,9 +52,7 @@ pre: " <b> 3.2 </b> "
 4. Chọn **Create inline policy** trong menu thả xuống.
 
     - Chọn **JSON**
-
     - **Policy editor**: Sao chép JSON này
-
     ```Json
         {
 	        "Version": "2012-10-17",
@@ -85,11 +70,8 @@ pre: " <b> 3.2 </b> "
     ```
 
     - Dán vào **Policy editor** và Nhấp vào **Next**
-
     - **Policy name**: nhập ``OpenSS-Policy``
-
     - Nhấp vào **Create policy**
-
     - Xem lại **Policy name**
 
 ![Attach permissions](/images/3-Amazonbedrock/3.2-attach-permissions-for-bedrock/0009.png)
