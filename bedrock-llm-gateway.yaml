@@ -1,0 +1,606 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'CloudFormation template for deploying an AI Gateway for Amazon Bedrock using API Gateway'
+
+Parameters:
+  EndpointType:
+    Type: String
+    Default: 'PRIVATE'
+    AllowedValues:
+      - 'PRIVATE'
+      - 'REGIONAL'
+    Description: Type of API Gateway endpoint (PRIVATE or REGIONAL)
+
+  EnableAuthorizer:
+    Type: String
+    Default: 'true'
+    AllowedValues:
+      - 'true'
+      - 'false'
+    Description: Enable Lambda Authorizer for API Gateway
+
+  CustomDomain:
+    Type: String
+    Default: ''
+    Description: Custom domain name for API Gateway. Leave empty to use API Gateway default domain.
+
+  HostedZoneId:
+    Type: String
+    Default: ''
+    Description: Public Route 53 Hosted Zone ID for the custom domain (required if CustomDomain is specified). This will be used for validating the SSL certificate (for both public and private domains) and, in case of a public domain, it will also be used for hosting the DNS record set.
+
+Conditions:
+  UseAuthorizer: !Equals [!Ref EnableAuthorizer, 'true']
+  UseCustomDomain: !Not [!Equals [!Ref CustomDomain, '']]
+  IsPrivateEndpoint: !Equals [!Ref EndpointType, 'PRIVATE']
+  UsePrivateCustomDomain: !And [
+    !Not [!Equals [!Ref CustomDomain, '']],
+    !Equals [!Ref EndpointType, 'PRIVATE']
+  ]
+  UseRegionalCustomDomain: !And [
+    !Not [!Equals [!Ref CustomDomain, '']],
+    !Equals [!Ref EndpointType, 'REGIONAL']
+  ]
+
+Rules:
+  RegionalEndpointRequiresAuthorizer:
+    RuleCondition: !Equals [!Ref EndpointType, 'REGIONAL']
+    Assertions:
+      - Assert: !Equals [!Ref EnableAuthorizer, 'true']
+        AssertDescription: 'Regional endpoints must have an authorizer enabled for security. Either enable the authorizer or use a private endpoint.'
+
+Resources:
+  # API Gateway
+  BedrockApiGateway:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: bedrock-llm-gateway
+      Description: API Gateway for Amazon Bedrock
+      EndpointConfiguration:
+        Types:
+          - !Ref EndpointType
+        VpcEndpointIds: !If 
+          - IsPrivateEndpoint
+          - [!Ref VpcEndpoint]
+          - !Ref 'AWS::NoValue'
+      Policy: !If
+        - IsPrivateEndpoint
+        -
+          Statement:
+            - Action: 'execute-api:Invoke'
+              Effect: Allow
+              Principal: '*'
+              Resource: 'execute-api:/*'
+            - Action: 'execute-api:Invoke'
+              Condition:
+                StringNotEquals:
+                  'aws:SourceVpce': !Ref VpcEndpoint
+              Effect: Deny
+              Principal: '*'
+              Resource: 'execute-api:/*'
+          Version: 2012-10-17
+        - !Ref 'AWS::NoValue'
+
+  # VPC for Private API Gateway
+  BedrockVPC:
+    Type: AWS::EC2::VPC
+    Condition: IsPrivateEndpoint
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-vpc
+
+  # Private Subnets (1 per AZ, 2 AZs)
+  PrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Condition: IsPrivateEndpoint
+    Properties:
+      VpcId: !Ref BedrockVPC
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: !Select [0, !GetAZs '']
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-private-subnet-1
+
+  PrivateSubnet2:
+    Type: AWS::EC2::Subnet
+    Condition: IsPrivateEndpoint
+    Properties:
+      VpcId: !Ref BedrockVPC
+      CidrBlock: 10.0.2.0/24
+      AvailabilityZone: !Select [1, !GetAZs '']
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-private-subnet-2
+
+  # Security Group for VPC Endpoint
+  EndpointSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Condition: IsPrivateEndpoint
+    Properties:
+      GroupDescription: Security group for API Gateway VPC Endpoint
+      VpcId: !Ref BedrockVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 10.0.0.0/16
+          Description: 'Allows invocation of the Amazon API Gateway'
+      SecurityGroupEgress:
+        - CidrIp: 127.0.0.1/32
+          IpProtocol: '-1'
+          Description: 'Limits security group egress traffic'
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-endpoint-sg
+
+  # VPC Endpoint for Private API Gateway
+  VpcEndpoint:
+    Type: AWS::EC2::VPCEndpoint
+    Condition: IsPrivateEndpoint
+    Properties:
+      VpcId: !Ref BedrockVPC
+      ServiceName: !Sub com.amazonaws.${AWS::Region}.execute-api
+      VpcEndpointType: Interface
+      SubnetIds:
+        - !Ref PrivateSubnet1
+        - !Ref PrivateSubnet2
+      SecurityGroupIds:
+        - !Ref EndpointSecurityGroup
+      PrivateDnsEnabled: true
+
+  # API Gateway Proxy Resource
+  BedrockApiGatewayProxyResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref BedrockApiGateway
+      ParentId: !GetAtt BedrockApiGateway.RootResourceId
+      PathPart: '{proxy+}'
+
+  # API Gateway ANY Method
+  BedrockApiGatewayAnyMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref BedrockApiGateway
+      ResourceId: !Ref BedrockApiGatewayProxyResource
+      HttpMethod: ANY
+      AuthorizationType: !If [UseAuthorizer, 'CUSTOM', 'NONE']
+      AuthorizerId: !If [UseAuthorizer, !Ref LambdaAuthorizer, !Ref 'AWS::NoValue']
+      Integration:
+        Type: AWS_PROXY
+        ResponseTransferMode: STREAM
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2021-11-15/functions/${IntegrationLambda.Arn}/response-streaming-invocations
+      RequestParameters:
+        method.request.path.proxy: true
+
+  # API Gateway Deployment
+  BedrockApiGatewayDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn:
+      - BedrockApiGatewayAnyMethod
+    Properties:
+      RestApiId: !Ref BedrockApiGateway
+
+  # API Gateway Stage
+  BedrockApiGatewayStage:
+    Type: 'AWS::ApiGateway::Stage'
+    Properties:
+      RestApiId: !Ref BedrockApiGateway
+      DeploymentId: !Ref BedrockApiGatewayDeployment
+      StageName: v1
+
+  # ACM Certificate for Custom Domain (Conditional)
+  DomainCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Condition: UseCustomDomain
+    Properties:
+      DomainName: !Ref CustomDomain
+      ValidationMethod: DNS
+      DomainValidationOptions:
+        - DomainName: !Ref CustomDomain
+          HostedZoneId: !Ref HostedZoneId
+
+  # Custom Domain Name for Private Endpoint (Conditional)
+  BedrockApiGatewayPrivateCustomDomain:
+    Type: AWS::ApiGateway::DomainNameV2
+    Condition: UsePrivateCustomDomain
+    Properties:
+      DomainName: !Ref CustomDomain
+      CertificateArn: !Ref DomainCertificate
+      EndpointConfiguration:
+        Types:
+          - PRIVATE
+      SecurityPolicy: TLS_1_2
+      Policy:
+        Statement:
+          - Action: 'execute-api:Invoke'
+            Effect: Allow
+            Principal: '*'
+            Resource: 'execute-api:/*'
+          - Action: 'execute-api:Invoke'
+            Condition:
+              StringNotEquals:
+                'aws:SourceVpce': !Ref VpcEndpoint
+            Effect: Deny
+            Principal: '*'
+            Resource: 'execute-api:/*'
+        Version: 2012-10-17
+
+  # Custom Domain Name for Regional Endpoint (Conditional)
+  BedrockApiGatewayRegionalCustomDomain:
+    Type: AWS::ApiGateway::DomainName
+    Condition: UseRegionalCustomDomain
+    Properties:
+      DomainName: !Ref CustomDomain
+      RegionalCertificateArn: !Ref DomainCertificate
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      SecurityPolicy: TLS_1_2
+
+  # Domain Name Access Association (for Private Custom Domain)
+  BedrockApiGatewayDomainNameAccessAssociation:
+    Type: AWS::ApiGateway::DomainNameAccessAssociation
+    Condition: UsePrivateCustomDomain
+    Properties:
+      DomainNameArn: !GetAtt BedrockApiGatewayPrivateCustomDomain.DomainNameArn
+      AccessAssociationSource: !Ref VpcEndpoint
+      AccessAssociationSourceType: VPCE
+
+  # Base Path Mapping for Private Endpoint (Conditional)
+  BedrockApiGatewayPrivateBasePathMapping:
+    Type: AWS::ApiGateway::BasePathMappingV2
+    Condition: UsePrivateCustomDomain
+    DependsOn: BedrockApiGatewayStage
+    Properties:
+      DomainNameArn: !GetAtt BedrockApiGatewayPrivateCustomDomain.DomainNameArn
+      RestApiId: !Ref BedrockApiGateway
+      Stage: v1
+
+  # Base Path Mapping for Regional Endpoint (Conditional)
+  BedrockApiGatewayRegionalBasePathMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    Condition: UseRegionalCustomDomain
+    Properties:
+      DomainName: !Ref BedrockApiGatewayRegionalCustomDomain
+      RestApiId: !Ref BedrockApiGateway
+      Stage: v1
+
+  # Private Hosted Zone for Private Custom Domain (Conditional)
+  BedrockApiGatewayPrivateHostedZone:
+    Type: AWS::Route53::HostedZone
+    Condition: UsePrivateCustomDomain
+    Properties:
+      Name: !Ref CustomDomain
+      VPCs:
+        - VPCId: !Ref BedrockVPC
+          VPCRegion: !Ref AWS::Region
+      HostedZoneConfig:
+        Comment: Private hosted zone for API Gateway private custom domain
+
+  # Route Tables for Private Subnets
+  PrivateRouteTable:
+    Type: AWS::EC2::RouteTable
+    Condition: IsPrivateEndpoint
+    Properties:
+      VpcId: !Ref BedrockVPC
+      Tags:
+        - Key: Name
+          Value: !Sub ${AWS::StackName}-private-rt
+
+  # Route Table Associations
+  PrivateSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: IsPrivateEndpoint
+    Properties:
+      SubnetId: !Ref PrivateSubnet1
+      RouteTableId: !Ref PrivateRouteTable
+
+  PrivateSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: IsPrivateEndpoint
+    Properties:
+      SubnetId: !Ref PrivateSubnet2
+      RouteTableId: !Ref PrivateRouteTable
+
+  # Route 53 Record for Custom Domain (Conditional)
+  BedrockApiGatewayDNSRecord:
+    Type: AWS::Route53::RecordSet
+    Condition: UseCustomDomain
+    Properties:
+      HostedZoneId: !If 
+        - UsePrivateCustomDomain
+        - !Ref BedrockApiGatewayPrivateHostedZone
+        - !Ref HostedZoneId
+      Name: !Ref CustomDomain
+      Type: A
+      AliasTarget:
+        DNSName: !If 
+          - UsePrivateCustomDomain
+          - !Sub vpce-${VpcEndpoint}.execute-api.${AWS::Region}.vpce.amazonaws.com
+          - !GetAtt BedrockApiGatewayRegionalCustomDomain.RegionalDomainName
+        HostedZoneId: !If 
+          - UsePrivateCustomDomain
+          - !Select [0, !Split [':', !Select [0, !GetAtt VpcEndpoint.DnsEntries]]]
+          - !GetAtt BedrockApiGatewayRegionalCustomDomain.RegionalHostedZoneId
+
+  # Lambda integration
+  IntegrationLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: index.handler
+      Role: !GetAtt IntegrationLambdaRole.Arn
+      Runtime: nodejs22.x
+      Timeout: 300
+      MemorySize: 256
+      Code:
+        ZipFile: |
+          const { SignatureV4 } = require('@aws-sdk/signature-v4');
+          const { HttpRequest } = require('@aws-sdk/protocol-http');
+          const { fromNodeProviderChain } = require('@aws-sdk/credential-providers');
+          const { createHash, createHmac } = require('crypto');
+          const https = require('https');
+          const { URL } = require('url');
+          
+          // Custom Sha256 implementation using Node.js built-in crypto
+          class Sha256 {
+              constructor(secret) {
+                  this.hash = secret ? createHmac('sha256', secret) : createHash('sha256');
+              }
+              
+              update(array) {
+                  this.hash.update(array);
+              }
+              
+              digest() {
+                  const buffer = this.hash.digest();
+                  return Promise.resolve(new Uint8Array(buffer.buffer));
+              }
+          }
+          
+          const credentialsProvider = fromNodeProviderChain();
+          const region = process.env.AWS_REGION;
+          
+          // Streaming handler using awslambda.streamifyResponse
+          exports.handler = awslambda.streamifyResponse(async (event, responseStream, context) => {
+              try {
+                  // get fresh AWS credentials for each invocation
+                  const credentials = await credentialsProvider();
+                  
+                  // Get requested client name from custom header "aws-endpoint-prefix"
+                  // which is set in the client side client factory
+                  const service = event.headers['aws-endpoint-prefix'];
+                  
+                  // create final service URL with query parameters
+                  const path = event.path || '';
+                  const queryParams = event.queryStringParameters || {};
+                  const url = `https://${service}.${region}.amazonaws.com${path}`;
+                  
+                  // create the AWS request object
+                  const parsedUrl = new URL(url);
+                  const request = new HttpRequest({
+                      method: event.httpMethod,
+                      hostname: parsedUrl.hostname,
+                      path: parsedUrl.pathname,
+                      query: queryParams,
+                      headers: {
+                          'host': parsedUrl.hostname,
+                          'content-type': event.headers['content-type'] || 'application/json'
+                      },
+                      body: event.body
+                  });
+                  
+                  // create the SigV4Auth signer
+                  const signer = new SignatureV4({
+                      credentials,
+                      service: 'bedrock',
+                      region: region,
+                      sha256: Sha256
+                  });
+                  
+                  // add the SigV4 signature to the request
+                  const signedRequest = await signer.sign(request);
+                  
+                  // Make streaming request to Bedrock
+                  const bedrockResponse = await makeStreamingHttpRequest(signedRequest);
+                  
+                  // Set up response metadata based on Bedrock's response
+                  const metadata = {
+                      statusCode: bedrockResponse.statusCode,
+                      headers: {
+                          "Content-Type": bedrockResponse.headers['content-type'] || event.headers['content-type'] || 'application/json',
+                          "Cache-Control": "no-cache"
+                      }
+                  };
+                  
+                  // Initialize the response stream with correct status code
+                  responseStream = awslambda.HttpResponseStream.from(responseStream, metadata);
+                  
+                  // Forward each chunk as it arrives from Bedrock
+                  bedrockResponse.on('data', (chunk) => {
+                      responseStream.write(chunk);
+                  });
+                  
+                  bedrockResponse.on('end', () => {
+                      responseStream.end();
+                  });
+                  
+                  bedrockResponse.on('error', (error) => {
+                      console.error('Bedrock response error:', error);
+                      responseStream.end();
+                  });
+                  
+              } catch (error) {
+                  console.error('Handler error:', error);
+                  
+                  // Set error response metadata
+                  const errorMetadata = {
+                      statusCode: 500,
+                      headers: {
+                          "Content-Type": "application/json"
+                      }
+                  };
+                  
+                  responseStream = awslambda.HttpResponseStream.from(responseStream, errorMetadata);
+                  responseStream.write(JSON.stringify({ error: 'Internal server error' }));
+                  responseStream.end();
+              }
+          });
+          
+          function makeStreamingHttpRequest(signedRequest) {
+              return new Promise((resolve, reject) => {
+                  // Construct full path with query parameters
+                  let fullPath = signedRequest.path;
+                  if (signedRequest.query && Object.keys(signedRequest.query).length > 0) {
+                      const queryString = Object.keys(signedRequest.query)
+                          .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(signedRequest.query[key])}`)
+                          .join('&');
+                      fullPath = `${signedRequest.path}?${queryString}`;
+                  }
+                  
+                  const options = {
+                      hostname: signedRequest.hostname,
+                      port: 443,
+                      path: fullPath,
+                      method: signedRequest.method,
+                      headers: signedRequest.headers
+                  };
+                  
+                  const req = https.request(options, (res) => {
+                      // Return the response stream directly for streaming
+                      resolve(res);
+                  });
+                  
+                  req.on('error', (error) => {
+                      reject(error);
+                  });
+                  
+                  if (signedRequest.body) {
+                      req.write(signedRequest.body);
+                  }
+                  
+                  req.end();
+              });
+          }
+
+  # Lambda integration Role
+  IntegrationLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/AmazonBedrockFullAccess
+
+  # Lambda Permission for API Gateway
+  IntegrationLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref IntegrationLambda
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${BedrockApiGateway}/*/*/*
+
+  # Lambda Authorizer (Conditional)
+  LambdaAuthorizer:
+    Type: AWS::ApiGateway::Authorizer
+    Condition: UseAuthorizer
+    Properties:
+      Name: bedrock-gateway-authorizer
+      RestApiId: !Ref BedrockApiGateway
+      Type: TOKEN
+      IdentitySource: method.request.header.Authorization
+      AuthorizerResultTtlInSeconds: 300
+      AuthorizerUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthorizerLambda.Arn}/invocations
+
+  # Authorizer Lambda (Conditional)
+  AuthorizerLambda:
+    Type: AWS::Lambda::Function
+    Condition: UseAuthorizer
+    Properties:
+      Handler: index.lambda_handler
+      Role: !GetAtt AuthorizerLambdaRole.Arn
+      Runtime: python3.13
+      Timeout: 10
+      MemorySize: 128
+      Code:
+        ZipFile: |
+          def lambda_handler(event, context):
+              try:
+                  # Placeholder for JWT validation
+                  # Implement your Authorization logic
+                  token = event['authorizationToken']
+                  
+                  # By default, deny all requests for security
+                  return generate_policy('user', 'Deny', event['methodArn'])
+              except Exception as e:
+                  return generate_policy('user', 'Deny', event['methodArn'])
+          
+          def generate_policy(principal_id, effect, resource):
+              policy = {
+                  'principalId': principal_id,
+                  'policyDocument': {
+                      'Version': '2012-10-17',
+                      'Statement': [
+                          {
+                              'Action': 'execute-api:Invoke',
+                              'Effect': effect,
+                              'Resource': resource
+                          }
+                      ]
+                  }
+              }
+              return policy
+
+  # Authorizer Lambda Role (Conditional)
+  AuthorizerLambdaRole:
+    Type: AWS::IAM::Role
+    Condition: UseAuthorizer
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  # Lambda Permission for Authorizer (Conditional)
+  AuthorizerLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Condition: UseAuthorizer
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref AuthorizerLambda
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${BedrockApiGateway}/authorizers/${LambdaAuthorizer}
+
+Outputs:
+  GatewayUrl:
+    Description: Gateway URL (Custom domain if configured, otherwise API Gateway URL)
+    Value: !If 
+      - UseCustomDomain
+      - !Sub https://${CustomDomain}
+      - !Sub https://${BedrockApiGateway}.execute-api.${AWS::Region}.amazonaws.com/v1
+  
+  ApiId:
+    Description: API Gateway ID
+    Value: !Ref BedrockApiGateway
+  
+  VpcId:
+    Description: VPC ID (only if endpoint type is PRIVATE)
+    Condition: IsPrivateEndpoint
+    Value: !Ref BedrockVPC
